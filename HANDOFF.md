@@ -13,6 +13,8 @@ Windows, with one host-dependent symlink skip. The verifier also checked local
 document links, JSON templates, archive contents and every manifest hash. CI
 defines Windows/Linux checks on Python 3.10 and 3.14; inspect the actual run result
 for a particular commit rather than treating workflow configuration as a pass.
+Export regression fixtures canonicalize temporary paths and intercept Path.open
+so fault injection reaches the file operations across supported Python versions.
 
 The source snapshot and existing candidate vaults were read-only references.
 No candidate documents, personal history, inboxes, forms, credentials, running

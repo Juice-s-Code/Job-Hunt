@@ -48,7 +48,9 @@ class ExportTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.base = Path(self.tmp.name)
+        # Windows runner TEMP can use an 8.3 alias. Match export()'s canonical
+        # root before comparing paths or calling its internal source helper.
+        self.base = Path(self.tmp.name).resolve()
         self.root = self.base / "framework"
         self.root.mkdir()
         for rel in exporter.FILES:
@@ -142,7 +144,6 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(outside.read_text(encoding="utf-8"), "SYNTHETIC PRIVATE SENTINEL")
 
     def test_directory_substitution_at_source_open_refused(self):
-        import io
         import os
         import subprocess
         from unittest import mock
@@ -152,7 +153,7 @@ class ExportTests(unittest.TestCase):
         folder = self.root / "docs"
         saved = self.root / "docs-safe"
         victim = folder / "SCHEMA.md"
-        real_open = io.open
+        real_open = Path.open
         changed = []
 
         def substitute_before_open(file, mode="r", *args, **kwargs):
@@ -176,7 +177,9 @@ class ExportTests(unittest.TestCase):
                 return handle
             return real_open(file, mode, *args, **kwargs)
 
-        with mock.patch("io.open", side_effect=substitute_before_open):
+        # Older pathlib versions capture io.open at import time. Patch the
+        # shared Path.open interface so the injection reaches every version.
+        with mock.patch.object(Path, "open", new=substitute_before_open):
             with self.assertRaises(exporter.ExportError):
                 exporter.export(self.root, self.out)
         self.assertEqual(changed, [True], "Substitution must reach the actual source-open seam")
@@ -185,7 +188,7 @@ class ExportTests(unittest.TestCase):
     def test_modified_manifest_during_readback_refused(self):
         import io
         from unittest import mock
-        real_open = io.open
+        real_open = Path.open
         changed = []
 
         def tamper_before_read(file, mode="r", *args, **kwargs):
@@ -206,7 +209,7 @@ class ExportTests(unittest.TestCase):
                     current.write(replacement.getvalue())
             return real_open(file, mode, *args, **kwargs)
 
-        with mock.patch("io.open", side_effect=tamper_before_read):
+        with mock.patch.object(Path, "open", new=tamper_before_read):
             with self.assertRaises(exporter.ExportError):
                 exporter.export(self.root, self.out)
         self.assertEqual(changed, [True], "Injection must exercise the real readback seam")
