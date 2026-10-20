@@ -1,0 +1,67 @@
+{
+  "name": "Starter - Public Greenhouse source only - MANUAL INACTIVE",
+  "active": false,
+  "nodes": [
+    {
+      "id": "starter-manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [260, 300],
+      "parameters": {},
+      "notes": "Owner-approved manual public-source fetch only. No schedule, candidate data, submissions, credentials or automatic activation.",
+      "notesInFlow": true
+    },
+    {
+      "id": "starter-public-greenhouse-get",
+      "name": "GET Public Greenhouse Board",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [560, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "https://boards-api.greenhouse.io/v1/boards/REPLACE_ME/jobs?content=true",
+        "authentication": "none",
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": false,
+        "options": {
+          "allowUnauthorizedCerts": false,
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "json",
+              "neverError": false
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "retryOnFail": false,
+      "notes": "Replace REPLACE_ME only with a board slug verified from the employer's public careers page. Raw source output is not normalized input or eligibility clearance. Retain the complete source body and URL; unverified eligibility, including no_ai, remains unknown/review. Never add an application POST, candidate payload or submit path.",
+      "notesInFlow": true
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET Public Greenhouse Board",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": []
+}

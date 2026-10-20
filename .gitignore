@@ -1,6 +1,71 @@
-.worktrees/
-__pycache__/
-*.py[cod]
-*.zip
+# Framework-only checkout. Real vaults MUST live outside it.
+# Ignore accidental candidate content; this is not a privacy guarantee.
+/Profile/
+/Applications/
+/Receipts/
+/Resume/
+/Cover Letters/
+/Research/
+/Networking/
+/Jobs/
+/Cursor.MD/
+/vault/
+/vaults/
+/private/
+/.jobhunt*/
+/.state/
+/state/
+
+# Local agent/editor configuration, memories, connectors and logs
+.claude/
+.hermes/
+.codex/
+.cursor/
+.obsidian/
+CLAUDE.local.md
+AGENTS.override.md
+.mcp.json
+mcp*.json
 .env
 .env.*
+*credentials*
+*secrets*
+*.pem
+*.key
+*.log
+*.jsonl
+*.sqlite*
+*.db
+*.db-*
+
+# Personal documents and captured browser/inbox evidence
+*.pdf
+*.doc
+*.docx
+*.rtf
+*.eml
+*.msg
+*.har
+*.png
+*.jpg
+*.jpeg
+/screenshots/
+/downloads/
+/browser-profile*/
+
+# Generated navigation, packages and runtime artifacts
+graphify-out/
+*.zip
+*.tar
+*.gz
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+Thumbs.db
+
+.worktrees/

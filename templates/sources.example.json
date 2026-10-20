@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "boards": [
+    {"board": "REPLACE_WITH_VERIFIED_BOARD_SLUG", "employer": "REPLACE_WITH_EMPLOYER_NAME"}
+  ]
+}
